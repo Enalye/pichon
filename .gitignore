@@ -1,0 +1,16 @@
+.dub
+docs.json
+__dummy.html
+docs/
+/pichon
+pichon.so
+pichon.dylib
+pichon.dll
+pichon.a
+pichon.lib
+pichon-test-*
+*.exe
+*.pdb
+*.o
+*.obj
+*.lst

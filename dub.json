@@ -1,0 +1,19 @@
+{
+    "authors": [
+        "enalye"
+    ],
+    "copyright": "Copyright © 2023, enalye",
+    "dependencies": {
+        "atelier": {
+            "version": "~master",
+            "path": "atelier"
+        }
+    },
+    "description": "Simple UI tool for Real-ESRGAN",
+    "license": "ZLib",
+    "name": "pichon",
+    "targetName": "pichon",
+    "targetType": "executable",
+    "workingDirectory": "",
+    "targetPath": "bin"
+}
