@@ -1,0 +1,10 @@
+{
+    "app": "",
+    "currentFile": "H:\\dev\\pichon\\bin\\realesrgan-ncnn-vulkan-20220424-windows\\onepiece_demo.mp4",
+    "currentModel": "realesr-animevideov3-x4",
+    "input": "",
+    "locale": "locale\\en_US.json",
+    "models": "models",
+    "output": "",
+    "path": "H:\\dev\\pichon\\realesrgan-ncnn-vulkan.exe"
+}
