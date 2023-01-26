@@ -32,10 +32,6 @@ void setupApplication(string[] args) {
     destroyApplication();
 }
 
-extern (C) SDL_HitTestResult hitTestFunc(SDL_Window* win, const SDL_Point* area, void* data) nothrow {
-    if (area.y < 25) {
-        if (area.x < 500)
-            return SDL_HITTEST_DRAGGABLE;
-    }
-    return SDL_HITTEST_NORMAL;
+extern (C) SDL_HitTestResult hitTestFunc(SDL_Window*, const SDL_Point* point, void*) nothrow {
+    return (point.y <= 50 && point.x < 450) ? SDL_HITTEST_DRAGGABLE : SDL_HITTEST_NORMAL;
 }

@@ -2,6 +2,7 @@ module common.layout;
 
 import atelier;
 
+enum BAR_COLOR = Color.fromHex(0x111111);
 enum BACKGROUND_COLOR = Color.fromHex(0x1f232d);
 enum BASE_COLOR = Color.fromHex(0x2a2e3c);
 enum FIELD_COLOR = Color.fromHex(0x434755);

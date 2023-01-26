@@ -4,7 +4,7 @@ import std.path, std.file;
 import atelier;
 
 import common;
-import gui.buttons, gui.open, gui.theme, gui.locale;
+import gui.buttons, gui.open, gui.theme, gui.locale, gui.bar;
 
 final class Window : GuiElement {
     private {
@@ -14,6 +14,7 @@ final class Window : GuiElement {
         RunButton _runBtn;
         ThemeUI _theme;
         LocaleUI _locale;
+        BarUI _bar;
     }
 
     this() {
@@ -27,17 +28,15 @@ final class Window : GuiElement {
         appendChild(vbox);
 
         {
-            auto title = new Label("PICHON", getFont(FontType.boldItalic));
-            title.color = TEXT_TITLE_COLOR;
-            title.setAlign(GuiAlignX.center, GuiAlignY.top);
-            title.position(Vec2f(0f, 25f));
-            appendChild(title);
+            _bar = new BarUI;
+            _bar.setAlign(GuiAlignX.center, GuiAlignY.top);
+            appendChild(_bar);
         }
 
         {
             auto hbox = new HContainer;
             hbox.setAlign(GuiAlignX.right, GuiAlignY.top);
-            hbox.position(Vec2f(20f, 20f));
+            hbox.position(Vec2f(10f, 60f));
             hbox.spacing = Vec2f(25f, 0f);
             hbox.setChildAlign(GuiAlignY.center);
             appendChild(hbox);
@@ -93,38 +92,6 @@ final class Window : GuiElement {
             vbox.appendChild(_runBtn);
         }
     }
-
-    import std.stdio;
-
-    /*bool _isGrabbing;
-    Vec2f _grabPos = Vec2f.zero;
-    Vec2i _winPos = Vec2i.zero;
-    override void onEvent(Event event) {
-        switch (event.type) with (Event.Type) {
-        case mouseDown:
-            _isGrabbing = true;
-            _grabPos = event.mouse.position;
-            _winPos = getWindowPosition();
-            break;
-        case mouseUp:
-            _isGrabbing = false;
-            break;
-        case mouseUpdate:
-            if(_isGrabbing) {
-                Vec2i delta = cast(Vec2i) (event.mouse.position - _grabPos);
-                setWindowPosition(_winPos + delta);
-                //_grabPos = event.mouse.position;
-                import bindbc.sdl;
-                SDL_PumpEvents();
-                SDL_FlushEvent(SDL_MOUSEMOTION);
-            }
-            break;
-        default:
-            break;
-        }
-
-        super.onEvent(event);
-    }*/
 
     override void onCallback(string id) {
         switch (id) {
