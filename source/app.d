@@ -10,6 +10,8 @@ void main(string[] args) {
     }
     catch (Exception e) {
         writeln(e.msg);
+		foreach (trace; e.info)
+			writeln("at: ", trace);
     }
 }
 /*

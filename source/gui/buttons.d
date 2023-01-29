@@ -30,18 +30,18 @@ final class ConfirmationButton : Button {
     }
 
     override void draw() {
-        _label.color = TEXT_TITLE_COLOR;
+        _label.color = getTheme(ThemeKey.textTitle);
         if (isLocked) {
-            _bg.color = LOCK_COLOR;
+            _bg.color = getTheme(ThemeKey.lock);
         }
         else if (isClicked) {
-            _bg.color = SELECT_COLOR;
+            _bg.color = getTheme(ThemeKey.select);
         }
         else if (isHovered) {
-            _bg.color = HOVER_COLOR;
+            _bg.color = getTheme(ThemeKey.hover);
         }
         else {
-            _bg.color = HINT_COLOR;
+            _bg.color = getTheme(ThemeKey.hint);
         }
         _bg.draw(center);
     }
@@ -76,13 +76,13 @@ final class DirButton : Button {
 
     override void draw() {
         if (isClicked) {
-            _bg.color = SELECT_COLOR;
+            _bg.color = getTheme(ThemeKey.select);
         }
         else if (isHovered) {
-            _bg.color = HOVER_COLOR;
+            _bg.color = getTheme(ThemeKey.hover);
         }
         else {
-            _bg.color = HINT_COLOR;
+            _bg.color = getTheme(ThemeKey.hint);
         }
         _bg.draw(center);
     }
@@ -104,13 +104,13 @@ final class ExitButton : Button {
 
     override void draw() {
         if (isClicked) {
-            _crossSprite.color = SELECT_COLOR;
+            _crossSprite.color = getTheme(ThemeKey.select);
         }
         else if (isHovered) {
-            _crossSprite.color = HOVER_COLOR;
+            _crossSprite.color = getTheme(ThemeKey.hover);
         }
         else {
-            _crossSprite.color = HINT_COLOR;
+            _crossSprite.color = getTheme(ThemeKey.hint);
         }
         _crossSprite.draw(center);
     }

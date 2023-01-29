@@ -8,20 +8,21 @@ module common.font;
 import atelier;
 
 private {
-    TrueTypeFont _veraFont, _veraBdFont, _veraBiFont, _veraItFont, _veraMonoFont;
+    TrueTypeFont _veraFont, _veraBdFont, _veraBiFont, _veraItFont, _veraMonoFont, _veraSmallFont;
 }
 
-void loadVeraFonts(int size) {
+void loadVeraFonts(int size, int smallSize) {
     _veraFont = new TrueTypeFont(veraFontData, size);
     _veraBdFont = new TrueTypeFont(veraBdFontData, size);
     _veraBiFont = new TrueTypeFont(veraBiFontData, size);
     _veraItFont = new TrueTypeFont(veraItFontData, size);
     _veraMonoFont = new TrueTypeFont(veraMonoFontData, size);
+    _veraSmallFont = new TrueTypeFont(veraFontData, smallSize);
     setDefaultFont(_veraFont);
 }
 
 enum FontType {
-    normal, bold, boldItalic, italic, mono
+    normal, bold, boldItalic, italic, mono, small
 }
 
 TrueTypeFont getFont(FontType fontType) {
@@ -36,6 +37,8 @@ TrueTypeFont getFont(FontType fontType) {
         return _veraItFont;
     case mono:
         return _veraMonoFont;
+    case small:
+        return _veraSmallFont;
     }
 }
 

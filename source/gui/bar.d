@@ -14,7 +14,7 @@ final class BarUI : GuiElement {
         size(Vec2f(getWindowWidth(), 50f));
 
         auto title = new Label("PICHON", getFont(FontType.boldItalic));
-        title.color = TEXT_TITLE_COLOR;
+        title.color = getTheme(ThemeKey.textTitle);
         title.setAlign(GuiAlignX.center, GuiAlignY.center);
         appendChild(title);
 
@@ -46,7 +46,7 @@ final class BarUI : GuiElement {
     }
 
     override void draw() {
-        drawFilledRect(origin, size, BAR_COLOR);
+        drawFilledRect(origin, size, getTheme(ThemeKey.bar));
     }
 }
 
@@ -71,16 +71,16 @@ final class QuitButton : Button {
 
     override void draw() {
         if (isClicked) {
-            _bg.color = SELECT_COLOR;
-            _crossSprite.color = TEXT_BASE_COLOR;
+            _bg.color = getTheme(ThemeKey.select);
+            _crossSprite.color = getTheme(ThemeKey.textBase);
         }
         else if (isHovered) {
-            _bg.color = HOVER_COLOR;
-            _crossSprite.color = TEXT_BASE_COLOR;
+            _bg.color = getTheme(ThemeKey.hover);
+            _crossSprite.color = getTheme(ThemeKey.textBase);
         }
         else {
-            _bg.color = BACKGROUND_COLOR;
-            _crossSprite.color = TEXT_TITLE_COLOR;
+            _bg.color = getTheme(ThemeKey.background);
+            _crossSprite.color = getTheme(ThemeKey.textTitle);
         }
         _bg.draw(center);
         _crossSprite.draw(center);
@@ -109,16 +109,16 @@ final class MinimizeButton : Button {
 
     override void draw() {
         if (isClicked) {
-            _bg.color = SELECT_COLOR;
-            _minimizeSprite.color = TEXT_BASE_COLOR;
+            _bg.color = getTheme(ThemeKey.select);
+            _minimizeSprite.color = getTheme(ThemeKey.textBase);
         }
         else if (isHovered) {
-            _bg.color = HOVER_COLOR;
-            _minimizeSprite.color = TEXT_BASE_COLOR;
+            _bg.color = getTheme(ThemeKey.hover);
+            _minimizeSprite.color = getTheme(ThemeKey.textBase);
         }
         else {
-            _bg.color = BACKGROUND_COLOR;
-            _minimizeSprite.color = TEXT_TITLE_COLOR;
+            _bg.color = getTheme(ThemeKey.background);
+            _minimizeSprite.color = getTheme(ThemeKey.textTitle);
         }
         _bg.draw(center);
         _minimizeSprite.draw(center);

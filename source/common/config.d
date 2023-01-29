@@ -21,6 +21,11 @@ private {
     bool _isDevMode = true;
     string _exeFileName, _exePath, _modelsFolder, _inputPath, _outputPath,
         _currentFile, _currentModel;
+    int _themeId = 0, _scale = 4;
+}
+
+string getExePath() {
+    return buildNormalizedPath(_exePath, _exeFileName);
 }
 
 string getBasePath() {
@@ -30,6 +35,16 @@ string getBasePath() {
     else {
         return dirName(thisExePath());
     }
+}
+
+int getThemeId() {
+    return _themeId;
+}
+
+void setThemeId(int themeId) {
+    _themeId = themeId;
+    sendCustomEvent("theme");
+    saveConfig();
 }
 
 string getCurrentModel() {
@@ -51,7 +66,29 @@ void setCurrentFile(string path) {
 }
 
 string getOutputPath() {
-    return _outputPath;
+    if (_outputPath.length)
+        return _outputPath;
+
+    auto path = dirName(_currentFile);
+
+    if (path.length)
+        return path;
+
+    return _exePath;
+}
+
+void setOutputPath(string path) {
+    _outputPath = path;
+    saveConfig();
+}
+
+int getScale() {
+    return _scale;
+}
+
+void setScale(int scale) {
+    _scale = scale;
+    saveConfig();
 }
 
 /// Load config file
@@ -79,6 +116,8 @@ void loadConfig() {
     _outputPath = getJsonStr(json, "output", "");
     _currentFile = getJsonStr(json, "currentFile", "");
     _currentModel = getJsonStr(json, "currentModel", "");
+    _scale = clamp(getJsonInt(json, "scale", 4), 2, 4);
+    _themeId = getJsonInt(json, "themeId", 0);
 
     string localePath = buildNormalizedPath(absolutePath(getJsonStr(json,
             "locale", ""), getBasePath()));
@@ -103,6 +142,7 @@ void saveConfig() {
     json["app"] = _exeFileName;
     json["path"] = _exePath;
     json["models"] = _modelsFolder;
+    json["scale"] = _scale;
     json["input"] = _inputPath;
     json["output"] = _outputPath;
     json["currentFile"] = _currentFile;
@@ -110,6 +150,7 @@ void saveConfig() {
     json["locale"] = (getLocale().length && exists(getLocale())) ? relativePath(
         buildNormalizedPath(getLocale()), getBasePath()) : buildNormalizedPath("locale",
         "en_US.json");
+    json["themeId"] = _themeId;
 
     std.file.write(_configFilePath, toJSON(json, true));
 }

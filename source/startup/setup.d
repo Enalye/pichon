@@ -24,7 +24,8 @@ void setupApplication(string[] args) {
 
     loadResources();
     loadConfig();
-    loadVeraFonts(18);
+    loadVeraFonts(18, 12);
+    initThemes();
 
     //Run
     appendRoot(new Window);

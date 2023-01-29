@@ -33,7 +33,7 @@ final class EditablePathGui : GuiElement {
     /// Ctor
     this(string path = "untitled") {
         label = new Label(path);
-        label.color = TEXT_TITLE_COLOR;
+        label.color = getTheme(ThemeKey.textTitle);
         label.setAlign(GuiAlignX.left, GuiAlignY.center);
         appendChild(label);
         size = label.size;
@@ -83,7 +83,7 @@ final class EditablePathGui : GuiElement {
                 removeChildren();
                 inputField = new InputField(size, label.text != "untitled" ? label.text : "");
                 inputField.font = new TrueTypeFont(veraMonoFontData, 12);
-                inputField.color = TEXT_TITLE_COLOR;
+                inputField.color = getTheme(ThemeKey.textTitle);
                 inputField.setAlign(GuiAlignX.center, GuiAlignY.center);
                 inputField.size = Vec2f(400f, label.size.y);
                 inputField.hasFocus = true;
@@ -95,7 +95,7 @@ final class EditablePathGui : GuiElement {
     }
 
     override void draw() {
-        drawFilledRect(origin, size, FIELD_COLOR);
+        drawFilledRect(origin, size, getTheme(ThemeKey.field));
     }
 }
 
@@ -111,13 +111,13 @@ final class ParentButton : Button {
 
     override void draw() {
         if (isClicked) {
-            _parentSprite.color = SELECT_COLOR;
+            _parentSprite.color = getTheme(ThemeKey.select);
         }
         else if (isHovered) {
-            _parentSprite.color = HOVER_COLOR;
+            _parentSprite.color = getTheme(ThemeKey.hover);
         }
         else {
-            _parentSprite.color = HINT_COLOR;
+            _parentSprite.color = getTheme(ThemeKey.hint);
         }
         _parentSprite.draw(center);
     }
