@@ -145,7 +145,7 @@ final class OpenModal : GuiElement {
         }
 
         {
-            _filePathLabel = new Label(getText(_allowDir ? "directory" : "file") ~ ": ---");
+            _filePathLabel = new Label(getText(_allowDir ? "path" : "file") ~ ": ---");
             _filePathLabel.color = getTheme(ThemeKey.textTitle);
             _filePathLabel.setAlign(GuiAlignX.left, GuiAlignY.bottom);
             _filePathLabel.position = Vec2f(20f, 50f);
@@ -207,7 +207,7 @@ final class OpenModal : GuiElement {
 
         if (_allowDir) {
             _fileName = "";
-            _filePathLabel.text = getText("directory") ~ ": " ~ _path;
+            _filePathLabel.text = getText("path") ~ ": " ~ _path;
             _applyBtn.isLocked = false;
         }
 
@@ -239,7 +239,7 @@ final class OpenModal : GuiElement {
                 _path = _pathLabel.text;
                 if (_allowDir) {
                     _fileName = "";
-                    _filePathLabel.text = getText(_allowDir ? "directory" : "file") ~ ": " ~ _path;
+                    _filePathLabel.text = getText(_allowDir ? "path" : "file") ~ ": " ~ _path;
                     _applyBtn.isLocked = false;
                 }
                 reloadList();
@@ -247,7 +247,7 @@ final class OpenModal : GuiElement {
             else {
                 _path = dirName(_pathLabel.text);
                 _fileName = baseName(_pathLabel.text);
-                _filePathLabel.text = getText(_allowDir ? "directory" : "file") ~ ": " ~ _fileName;
+                _filePathLabel.text = getText(_allowDir ? "path" : "file") ~ ": " ~ _fileName;
                 _applyBtn.isLocked = false;
             }
             break;
@@ -259,21 +259,21 @@ final class OpenModal : GuiElement {
             if (isDir(path)) {
                 _path = path;
                 if (_allowDir) {
-                    _filePathLabel.text = getText(_allowDir ? "directory" : "file") ~ ": " ~ _path;
+                    _filePathLabel.text = getText(_allowDir ? "path" : "file") ~ ": " ~ _path;
                     _applyBtn.isLocked = false;
                 }
                 reloadList();
             }
             else {
                 _fileName = _list.getSubDir();
-                _filePathLabel.text = getText(_allowDir ? "directory" : "file") ~ ": " ~ _fileName;
+                _filePathLabel.text = getText(_allowDir ? "path" : "file") ~ ": " ~ _fileName;
                 _applyBtn.isLocked = false;
             }
             break;
         case "parent_folder":
             _path = dirName(_path);
             if (_allowDir) {
-                _filePathLabel.text = getText(_allowDir ? "directory" : "file") ~ ": " ~ _path;
+                _filePathLabel.text = getText(_allowDir ? "path" : "file") ~ ": " ~ _path;
                 _applyBtn.isLocked = false;
             }
             reloadList();
@@ -321,7 +321,7 @@ final class OpenModal : GuiElement {
 
         if (resetSelection && !_allowDir) {
             _fileName = "";
-            _filePathLabel.text = getText(_allowDir ? "directory" : "file") ~ ": ---";
+            _filePathLabel.text = getText(_allowDir ? "path" : "file") ~ ": ---";
             _applyBtn.isLocked = true;
         }
         _pathLabel.text = _path;

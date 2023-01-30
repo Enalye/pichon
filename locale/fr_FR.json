@@ -1,13 +1,23 @@
 {
     "locale": "FR",
-    "file": "Fichier",
-    "file_to_open": "Fichier à ouvrir",
     "model": "Modèle",
     "scale": "Échelle",
+    "file": "Fichier",
+    "select_file": "Choisir un fichier",
+    "output": "Sortie",
+    "select_output": "Choisir un dossier de sortie",
+    "default_output": "Prend le dossier d’entrée par défaut",
+    "output_name": "Nom",
+    "output_name_default": "Nom par défaut",
+    "extension": "Extension",
+    "extension_auto": "Automatique",
+    "run": "Lancer",
+    "done": "Fichier généré à",
+    "file_to_open": "Fichier à ouvrir",
     "search": "Rechercher",
+    "path": "Chemin",
     "open": "Ouvrir",
     "apply": "Appliquer",
     "cancel": "Annuler",
-    "close": "Fermer",
-    "run": "Lancer"
+    "close": "Fermer"
 }

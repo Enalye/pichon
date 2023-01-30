@@ -77,6 +77,10 @@ string getOutputPath() {
     return _exePath;
 }
 
+bool hasOutputPath() {
+    return _outputPath.length > 0;
+}
+
 void setOutputPath(string path) {
     _outputPath = path;
     saveConfig();

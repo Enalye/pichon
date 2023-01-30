@@ -13,7 +13,7 @@ import startup.loader;
 void setupApplication(string[] args) {
     //Init
     enableAudio(false);
-    createApplication(Vec2i(550, 600), "Pichon", SDL_INIT_VIDEO);
+    createApplication(Vec2i(550, 650), "Pichon", SDL_INIT_VIDEO);
     setWindowResizable(false);
     setWindowBordered(false);
     setWindowHitTest(&hitTestFunc, null);

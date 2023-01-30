@@ -23,7 +23,7 @@ private shared {
 
 final class Window : GuiElement {
     private {
-        DropDownList _modelSelector, _scaleSelector;
+        DropDownList _modelSelector, _scaleSelector, _extensionSelector;
         FileButton _inputFileBtn, _outputFolderBtn;
         InputField _outputFileField;
         RunButton _runBtn;
@@ -32,9 +32,11 @@ final class Window : GuiElement {
         BarUI _bar;
         QuitButton _clearOutputBtn;
         ProgressBar _progressBar;
-        Label _logLabel;
+        Label _logLabel, _outputNameLabel, _outputNameDefaultLabel;
+        InputField _outputNameField;
+        ToggleUI _outputNameDefaultToggle;
 
-        Label _modelLabel, _scaleLabel, _fileLabel, _outputLabel;
+        Label _modelLabel, _scaleLabel, _fileLabel, _outputLabel, _extensionLabel;
         ScrollLabel _inputFileLabel, _outputFileLabel;
 
         AppThread _appThread;
@@ -84,7 +86,7 @@ final class Window : GuiElement {
             _modelLabel.setAlign(GuiAlignX.left, GuiAlignY.bottom);
             box.appendChild(_modelLabel);
 
-            _modelSelector = new DropDownList(Vec2f(300f, 25f), 5);
+            _modelSelector = new DropDownList(Vec2f(300f, 25f), 4);
             _modelSelector.setAlign(GuiAlignX.right, GuiAlignY.bottom);
 
             auto modelsPath = buildNormalizedPath(EXE_PATH, EXE_MODELS_FOLDER);
@@ -139,7 +141,6 @@ final class Window : GuiElement {
         {
             auto box = new VContainer;
             box.setAlign(GuiAlignX.left, GuiAlignY.center);
-            box.spacing = Vec2f(0f, 10f);
             box.setChildAlign(GuiAlignX.left);
             vbox.appendChild(box);
 
@@ -154,6 +155,7 @@ final class Window : GuiElement {
             _inputFileLabel.setAlign(GuiAlignX.right, GuiAlignY.bottom);
             hbox.appendChild(_inputFileLabel);
 
+            box.appendChild(new SpaceUI(Vec2f(0f, 10f)));
             _inputFileBtn = new FileButton("select_file");
             _inputFileBtn.setCallback(this, "input");
             box.appendChild(_inputFileBtn);
@@ -164,34 +166,88 @@ final class Window : GuiElement {
         {
             auto box = new VContainer;
             box.setAlign(GuiAlignX.left, GuiAlignY.center);
-            box.spacing = Vec2f(0f, 10f);
             box.setChildAlign(GuiAlignX.left);
             vbox.appendChild(box);
 
-            auto hbox = new GuiElement;
-            box.appendChild(hbox);
+            {
+                auto hbox = new GuiElement;
+                box.appendChild(hbox);
 
-            _outputLabel = new Label(getText("output") ~ ": ");
-            _outputLabel.setAlign(GuiAlignX.left, GuiAlignY.bottom);
-            hbox.appendChild(_outputLabel);
+                _outputLabel = new Label(getText("output") ~ ": ");
+                _outputLabel.setAlign(GuiAlignX.left, GuiAlignY.bottom);
+                hbox.appendChild(_outputLabel);
 
-            _outputFileLabel = new ScrollLabel(350f, getOutputPath().length ?
-                    getOutputPath() : getText("default_output"));
-            _outputFileLabel.setAlign(GuiAlignX.right, GuiAlignY.bottom);
-            _outputFileLabel.position(Vec2f(50f, 0f));
-            hbox.appendChild(_outputFileLabel);
+                _outputFileLabel = new ScrollLabel(350f, hasOutputPath() ?
+                        getOutputPath() : getText("default_output"));
+                _outputFileLabel.setAlign(GuiAlignX.right, GuiAlignY.bottom);
+                _outputFileLabel.position(Vec2f(50f, 0f));
+                hbox.appendChild(_outputFileLabel);
 
-            _clearOutputBtn = new QuitButton();
-            _clearOutputBtn.setAlign(GuiAlignX.right, GuiAlignY.bottom);
-            _clearOutputBtn.setCallback(this, "output.clear");
-            hbox.appendChild(_clearOutputBtn);
+                _clearOutputBtn = new QuitButton();
+                _clearOutputBtn.setAlign(GuiAlignX.right, GuiAlignY.bottom);
+                _clearOutputBtn.setCallback(this, "output.clear");
+                hbox.appendChild(_clearOutputBtn);
 
+                hbox.size(Vec2f(500f, max(_fileLabel.size.y,
+                        _outputFileLabel.size.y, _clearOutputBtn.size.y)));
+            }
+
+            box.appendChild(new SpaceUI(Vec2f(0f, 10f)));
             _outputFolderBtn = new FileButton("select_output");
             _outputFolderBtn.setCallback(this, "output");
             box.appendChild(_outputFolderBtn);
+            box.appendChild(new SpaceUI(Vec2f(0f, 10f)));
 
-            hbox.size(Vec2f(500f, max(_fileLabel.size.y,
-                    _inputFileLabel.size.y, _clearOutputBtn.size.y)));
+            {
+                auto hbox = new GuiElement;
+                box.appendChild(hbox);
+
+                _outputNameLabel = new Label(getText("output_name") ~ ": ");
+                _outputNameLabel.setAlign(GuiAlignX.left, GuiAlignY.bottom);
+                hbox.appendChild(_outputNameLabel);
+
+                _outputNameField = new InputField(Vec2f(200f, 25f), "");
+                _outputNameField.setAlign(GuiAlignX.left, GuiAlignY.bottom);
+                _outputNameField.position(Vec2f(100f, 0f));
+                _outputNameField.font = getFont(FontType.mono);
+                _outputNameField.color = getTheme(ThemeKey.textBase);
+                _outputNameField.caretColor = getTheme(ThemeKey.hint);
+                _outputNameField.selectionColor = getTheme(ThemeKey.select);
+                hbox.appendChild(_outputNameField);
+
+                _outputNameDefaultLabel = new Label(getText("output_name_default") ~ ": ");
+                _outputNameDefaultLabel.setAlign(GuiAlignX.right, GuiAlignY.bottom);
+                _outputNameDefaultLabel.position(Vec2f(35f, 0f));
+                hbox.appendChild(_outputNameDefaultLabel);
+
+                _outputNameDefaultToggle = new ToggleUI(true);
+                _outputNameDefaultToggle.setAlign(GuiAlignX.right, GuiAlignY.bottom);
+                _outputNameDefaultToggle.setCallback(this, "output.name.default");
+                hbox.appendChild(_outputNameDefaultToggle);
+
+                hbox.size(Vec2f(500f, max(_outputNameLabel.size.y,
+                        _outputNameField.size.y, _clearOutputBtn.size.y)));
+            }
+        }
+
+        {
+            auto hbox = new GuiElement;
+            vbox.appendChild(hbox);
+
+            _extensionLabel = new Label(getText("extension") ~ ":");
+            _extensionLabel.setAlign(GuiAlignX.left, GuiAlignY.bottom);
+            hbox.appendChild(_extensionLabel);
+
+            _extensionSelector = new DropDownList(Vec2f(150f, 25f), 3);
+            _extensionSelector.setAlign(GuiAlignX.right, GuiAlignY.bottom);
+            foreach (value; [getText("extension_auto"), "jpg", "png", "webp"]) {
+                _extensionSelector.add(value);
+            }
+
+            _extensionSelector.setCallback(this, "extension");
+            hbox.appendChild(_extensionSelector);
+
+            hbox.size(Vec2f(300f, max(_extensionLabel.size.y, _extensionSelector.size.y)));
         }
 
         {
@@ -217,6 +273,44 @@ final class Window : GuiElement {
             _logLabel.setAlign(GuiAlignX.center, GuiAlignY.bottom);
             appendChild(_logLabel);
         }
+
+        onCallback("output.name.default");
+    }
+
+    override void onEvent(Event event) {
+        switch (event.type) with (Event.Type) {
+        case custom:
+            switch (event.custom.id) {
+            case "locale":
+                _modelLabel.text = getText("model") ~ ":";
+                _scaleLabel.text = getText("scale") ~ ":";
+                _fileLabel.text = getText("file") ~ ": ";
+                _outputLabel.text = getText("output") ~ ": ";
+                if (!hasOutputPath())
+                    _outputFileLabel.setText(getText("default_output"));
+
+                _outputNameLabel.text = getText("output_name") ~ ": ";
+                _outputNameDefaultLabel.text = getText("output_name_default") ~ ": ";
+                _extensionLabel.text = getText("extension") ~ ":";
+
+                const uint selectedId = _extensionSelector.selected();
+                _extensionSelector.removeChildren();
+                foreach (value; [
+                        getText("extension_auto"), "jpg", "png", "webp"
+                    ]) {
+                    _extensionSelector.add(value);
+                }
+                _extensionSelector.selected = selectedId;
+                break;
+            case "theme":
+                break;
+            default:
+                break;
+            }
+            break;
+        default:
+            break;
+        }
     }
 
     override void onCallback(string id) {
@@ -235,6 +329,9 @@ final class Window : GuiElement {
             auto modal = popModal!OpenModal;
             setCurrentFile(modal.getPath());
             _inputFileLabel.setText(modal.getPath());
+
+            if (_outputNameDefaultToggle.isChecked)
+                _setDefaultOutputName();
             break;
         case "output":
             stopOverlay();
@@ -253,6 +350,24 @@ final class Window : GuiElement {
             setOutputPath("");
             _outputFileLabel.setText(getText("default_output"));
             break;
+        case "output.name.default":
+            if (_outputNameDefaultToggle.isChecked) {
+                _outputNameField.isLocked = true;
+                _outputNameField.hasFocus = false;
+                _outputNameField.isInteractable = false;
+                _outputNameField.color = getTheme(ThemeKey.textTitle);
+                _outputNameField.caretColor = getTheme(ThemeKey.hint);
+                _outputNameField.selectionColor = getTheme(ThemeKey.select);
+                _setDefaultOutputName();
+            }
+            else {
+                _outputNameField.isLocked = false;
+                _outputNameField.isInteractable = true;
+                _outputNameField.color = getTheme(ThemeKey.textBase);
+                _outputNameField.caretColor = getTheme(ThemeKey.hint);
+                _outputNameField.selectionColor = getTheme(ThemeKey.select);
+            }
+            break;
         case "model":
             setCurrentModel(_modelSelector.getSelectedName());
             break;
@@ -269,10 +384,13 @@ final class Window : GuiElement {
                 setScale(4);
                 break;
             }
+            if (_outputNameDefaultToggle.isChecked)
+                _setDefaultOutputName();
             break;
         case "run":
             _generatedFile = buildNormalizedPath(getOutputPath(),
-                setExtension("output", extension(getCurrentFile())));
+                setExtension(_outputNameField.text, _extensionSelector.selected() == 0 ?
+                    extension(getCurrentFile()) : _extensionSelector.getSelectedName()));
             _appThread = new AppThread([
                 getExePath(), "-i", getCurrentFile(), "-o", _generatedFile,
                 "-n", getCurrentModel(), "-s", to!string(getScale())
@@ -282,6 +400,12 @@ final class Window : GuiElement {
         default:
             break;
         }
+    }
+
+    private void _setDefaultOutputName() {
+        string name = stripExtension(baseName(getCurrentFile()));
+        string scale = to!string(getScale());
+        _outputNameField.text = name ~ "-x" ~ scale;
     }
 
     override void update(float deltaTime) {
@@ -470,17 +594,35 @@ final class FileButton : Button {
     private {
         NinePatch _bg;
         Label _label;
+        string _key;
     }
 
     this(string key) {
+        _key = key;
         size = Vec2f(500f, 35f);
 
-        _label = new Label(getText(key));
+        _label = new Label(getText(_key));
         _label.setAlign(GuiAlignX.center, GuiAlignY.center);
         appendChild(_label);
 
         _bg = fetch!NinePatch("bg");
         _bg.size = size;
+    }
+
+    override void onEvent(Event event) {
+        switch (event.type) with (Event.Type) {
+        case custom:
+            switch (event.custom.id) {
+            case "locale":
+                _label.text = getText(_key);
+                break;
+            default:
+                break;
+            }
+            break;
+        default:
+            break;
+        }
     }
 
     override void update(float deltaTime) {
@@ -571,5 +713,42 @@ final class ScrollLabel : GuiElement {
         else {
             _label.position = Vec2f.zero;
         }
+    }
+}
+
+final class ToggleUI : GuiElement {
+    private {
+        Sprite _uncheckedSprite, _checkedSprite;
+        bool _isChecked;
+    }
+
+    @property {
+        bool isChecked() const {
+            return _isChecked;
+        }
+    }
+
+    this(bool isChecked_ = false) {
+        _isChecked = isChecked_;
+
+        _uncheckedSprite = fetch!Sprite("toggle");
+        _checkedSprite = fetch!Sprite("toggle.check");
+
+        _uncheckedSprite.color = getTheme(ThemeKey.textTitle);
+        _checkedSprite.color = getTheme(ThemeKey.textTitle);
+
+        size(_checkedSprite.size);
+    }
+
+    override void onSubmit() {
+        _isChecked = !_isChecked;
+        triggerCallback();
+    }
+
+    override void draw() {
+        if (_isChecked)
+            _checkedSprite.draw(center);
+        else
+            _uncheckedSprite.draw(center);
     }
 }

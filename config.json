@@ -1,11 +1,11 @@
 {
     "app": "realesrgan-ncnn-vulkan.exe",
     "currentFile": "H:\\dev\\pichon\\bin\\realesrgan-ncnn-vulkan-20220424-windows\\input.jpg",
-    "currentModel": "realesr-animevideov3-x2",
+    "currentModel": "realesrgan-x4plus-anime",
     "input": "",
-    "locale": "locale\\en_US.json",
+    "locale": "locale\\fr_FR.json",
     "models": "models",
-    "output": "H:\\dev\\pichon",
+    "output": "",
     "path": "H:\\dev\\pichon\\bin\\realesrgan-ncnn-vulkan-20220424-windows",
     "scale": 4,
     "themeId": 0

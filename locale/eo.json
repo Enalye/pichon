@@ -1,13 +1,23 @@
 {
     "locale": "EO",
-    "file": "Dosiero",
-    "file_to_open": "Malfermenda dosiero",
     "model": "Modelo",
     "scale": "Skalo",
-    "search": "Serĉi",
+    "file": "Dosiero",
+    "select_file": "Elektu dosieron",
+    "output": "Eligo",
+    "select_output": "Elektu eligdosierujon",
+    "default_output": "Kiel la enigdosierujo",
+    "output_name": "Nomo",
+    "output_name_default": "Defauxlta nomo",
+    "extension": "Finajxo",
+    "extension_auto": "Auxtomata",
+    "run": "Ruli",
+    "done": "Dosiero kreita cxe",
+    "file_to_open": "Malfermenda dosiero",
+    "search": "Sercxi",
+    "path": "Adreso",
     "open": "Malfermi",
     "apply": "Apliki",
     "cancel": "Nuligi",
-    "close": "Ĉesi",
-    "run": "Ruli"
+    "close": "Cxesi"
 }
