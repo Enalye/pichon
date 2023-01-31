@@ -6,7 +6,7 @@
     "select_file": "Choisir un fichier",
     "output": "Sortie",
     "select_output": "Choisir un dossier de sortie",
-    "default_output": "Prend le dossier d’entrée par défaut",
+    "default_output": "Identique au dossier source",
     "output_name": "Nom",
     "output_name_default": "Nom par défaut",
     "extension": "Extension",

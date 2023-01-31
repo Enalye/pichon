@@ -6,7 +6,7 @@
     "select_file": "Select a file",
     "output": "Output",
     "select_output": "Select an output folder",
-    "default_output": "Default to input folder",
+    "default_output": "Same as the input folder",
     "output_name": "Name",
     "output_name_default": "Default name",
     "extension": "Extension",

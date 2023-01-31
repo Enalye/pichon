@@ -26,16 +26,16 @@ void initThemes() {
     };
 
     AppTheme lightPink = {
-        bar: Color.fromHex(0xf1f1f1), //
-        background: Color.fromHex(0xffffff), //
-        base: Color.fromHex(0xcccccc), //
-        field: Color.fromHex(0x7d717e), //
+        bar: Color.fromHex(0x111111), //
+        background: Color.fromHex(0x1f232d), //
+        base: Color.fromHex(0x2a2e3c), //
+        field: Color.fromHex(0x434755), //
         hint: Color.fromHex(0xee00d4), //
         hover: Color.fromHex(0xe25bd4), //
         select: Color.fromHex(0x9a6995), //
         lock: Color.fromHex(0x524c52), //
-        textBase: Color.fromHex(0x000000), //
-        textTitle: Color.fromHex(0x231923)
+        textBase: Color.fromHex(0xffffff), //
+        textTitle: Color.fromHex(0xa6abbb)
     };
 
     _themes = [darkAqua, lightPink];

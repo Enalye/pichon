@@ -84,6 +84,7 @@ final class Window : GuiElement {
 
             _modelLabel = new Label(getText("model") ~ ":");
             _modelLabel.setAlign(GuiAlignX.left, GuiAlignY.bottom);
+            _modelLabel.color = getTheme(ThemeKey.textBase);
             box.appendChild(_modelLabel);
 
             _modelSelector = new DropDownList(Vec2f(300f, 25f), 4);
@@ -111,6 +112,7 @@ final class Window : GuiElement {
 
             _scaleLabel = new Label(getText("scale") ~ ":");
             _scaleLabel.setAlign(GuiAlignX.left, GuiAlignY.bottom);
+            _scaleLabel.color = getTheme(ThemeKey.textBase);
             box.appendChild(_scaleLabel);
 
             _scaleSelector = new DropDownList(Vec2f(50f, 25f), 3);
@@ -149,6 +151,7 @@ final class Window : GuiElement {
 
             _fileLabel = new Label(getText("file") ~ ": ");
             _fileLabel.setAlign(GuiAlignX.left, GuiAlignY.bottom);
+            _fileLabel.color = getTheme(ThemeKey.textBase);
             hbox.appendChild(_fileLabel);
 
             _inputFileLabel = new ScrollLabel(400f, getCurrentFile());
@@ -175,6 +178,7 @@ final class Window : GuiElement {
 
                 _outputLabel = new Label(getText("output") ~ ": ");
                 _outputLabel.setAlign(GuiAlignX.left, GuiAlignY.bottom);
+                _outputLabel.color = getTheme(ThemeKey.textBase);
                 hbox.appendChild(_outputLabel);
 
                 _outputFileLabel = new ScrollLabel(350f, hasOutputPath() ?
@@ -204,6 +208,7 @@ final class Window : GuiElement {
 
                 _outputNameLabel = new Label(getText("output_name") ~ ": ");
                 _outputNameLabel.setAlign(GuiAlignX.left, GuiAlignY.bottom);
+                _outputNameLabel.color = getTheme(ThemeKey.textBase);
                 hbox.appendChild(_outputNameLabel);
 
                 _outputNameField = new InputField(Vec2f(200f, 25f), "");
@@ -218,6 +223,7 @@ final class Window : GuiElement {
                 _outputNameDefaultLabel = new Label(getText("output_name_default") ~ ": ");
                 _outputNameDefaultLabel.setAlign(GuiAlignX.right, GuiAlignY.bottom);
                 _outputNameDefaultLabel.position(Vec2f(35f, 0f));
+                _outputNameDefaultLabel.color = getTheme(ThemeKey.textBase);
                 hbox.appendChild(_outputNameDefaultLabel);
 
                 _outputNameDefaultToggle = new ToggleUI(true);
@@ -236,6 +242,7 @@ final class Window : GuiElement {
 
             _extensionLabel = new Label(getText("extension") ~ ":");
             _extensionLabel.setAlign(GuiAlignX.left, GuiAlignY.bottom);
+            _extensionLabel.color = getTheme(ThemeKey.textBase);
             hbox.appendChild(_extensionLabel);
 
             _extensionSelector = new DropDownList(Vec2f(150f, 25f), 3);
@@ -271,6 +278,7 @@ final class Window : GuiElement {
             _logLabel = new Label("", getFont(FontType.small));
             _logLabel.position(Vec2f(0f, 5f));
             _logLabel.setAlign(GuiAlignX.center, GuiAlignY.bottom);
+            _logLabel.color = getTheme(ThemeKey.textBase);
             appendChild(_logLabel);
         }
 
@@ -303,6 +311,22 @@ final class Window : GuiElement {
                 _extensionSelector.selected = selectedId;
                 break;
             case "theme":
+                setWindowClearColor(getTheme(ThemeKey.background));
+
+                _modelLabel.color = getTheme(ThemeKey.textBase);
+                _scaleLabel.color = getTheme(ThemeKey.textBase);
+                _fileLabel.color = getTheme(ThemeKey.textBase);
+                _outputLabel.color = getTheme(ThemeKey.textBase);
+                _outputNameLabel.color = getTheme(ThemeKey.textBase);
+                _outputNameDefaultLabel.color = getTheme(ThemeKey.textBase);
+                _extensionLabel.color = getTheme(ThemeKey.textBase);
+                _logLabel.color = getTheme(ThemeKey.textBase);
+
+                _outputNameField.color = getTheme(_outputNameDefaultToggle.isChecked ?
+                        ThemeKey.textTitle : ThemeKey.textBase);
+                _outputNameField.caretColor = getTheme(ThemeKey.hint);
+                _outputNameField.selectionColor = getTheme(ThemeKey.select);
+
                 break;
             default:
                 break;
@@ -603,6 +627,7 @@ final class FileButton : Button {
 
         _label = new Label(getText(_key));
         _label.setAlign(GuiAlignX.center, GuiAlignY.center);
+        _label.color = getTheme(ThemeKey.textBase);
         appendChild(_label);
 
         _bg = fetch!NinePatch("bg");
@@ -615,6 +640,9 @@ final class FileButton : Button {
             switch (event.custom.id) {
             case "locale":
                 _label.text = getText(_key);
+                break;
+            case "theme":
+                _label.color = getTheme(ThemeKey.textBase);
                 break;
             default:
                 break;
@@ -656,7 +684,27 @@ final class RunButton : Button {
 
         _label = new Label(getText("run"), getFont(FontType.bold));
         _label.setAlign(GuiAlignX.center, GuiAlignY.center);
+        _label.color = getTheme(ThemeKey.textBase);
         appendChild(_label);
+    }
+
+    override void onEvent(Event event) {
+        switch (event.type) with (Event.Type) {
+        case custom:
+            switch (event.custom.id) {
+            case "locale":
+                _label.text = getText("run");
+                break;
+            case "theme":
+                _label.color = getTheme(ThemeKey.textBase);
+                break;
+            default:
+                break;
+            }
+            break;
+        default:
+            break;
+        }
     }
 
     override void draw() {
@@ -699,6 +747,22 @@ final class ScrollLabel : GuiElement {
         _timer.start(5f);
     }
 
+    override void onEvent(Event event) {
+        switch (event.type) with (Event.Type) {
+        case custom:
+            switch (event.custom.id) {
+            case "theme":
+                _label.color = getTheme(ThemeKey.textTitle);
+                break;
+            default:
+                break;
+            }
+            break;
+        default:
+            break;
+        }
+    }
+
     void setText(string txt) {
         _label.text = txt;
         size(Vec2f(size.x, _label.size.y));
@@ -738,6 +802,23 @@ final class ToggleUI : GuiElement {
         _checkedSprite.color = getTheme(ThemeKey.textTitle);
 
         size(_checkedSprite.size);
+    }
+
+    override void onEvent(Event event) {
+        switch (event.type) with (Event.Type) {
+        case custom:
+            switch (event.custom.id) {
+            case "theme":
+                _uncheckedSprite.color = getTheme(ThemeKey.textTitle);
+                _checkedSprite.color = getTheme(ThemeKey.textTitle);
+                break;
+            default:
+                break;
+            }
+            break;
+        default:
+            break;
+        }
     }
 
     override void onSubmit() {
