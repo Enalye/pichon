@@ -18,7 +18,7 @@ enum EXE_MODELS_FOLDER = "models";
 private {
     bool _isConfigFilePathConfigured;
     string _configFilePath = "config.json";
-    bool _isDevMode = true;
+    bool _isDevMode = false;
     string _exeFileName, _exePath, _modelsFolder, _inputPath, _outputPath,
         _currentFile, _currentModel;
     int _themeId = 0, _scale = 4;
