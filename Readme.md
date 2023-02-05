@@ -28,4 +28,4 @@ You can always directly modify the `config.json` file that is generated next to 
 If no model shows up in the drop down list **(1)**, verify that a `models` folder exists next to the ESRGAN program, if not, or if the folder is different, change the `models` path inside the `config.json` file.
 
 ## Why this name ?
-`Pichon` is occitan (a family of local languages in southern france) for `small`, this name is pronounced \pitʃu\.
+`Pichon` is occitan (a family of local languages in southern france) for `small`, this name is pronounced \\pitʃu\\.
