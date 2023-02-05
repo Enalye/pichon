@@ -28,6 +28,13 @@ string getExePath() {
     return buildNormalizedPath(_exePath, _exeFileName);
 }
 
+void setExePath(string exePath) {
+    _exePath = dirName(exePath);
+    _exeFileName = baseName(exePath);
+    saveConfig();
+    sendCustomEvent("exe");
+}
+
 string getBasePath() {
     if (_isDevMode) {
         return getcwd();
@@ -45,6 +52,10 @@ void setThemeId(int themeId) {
     _themeId = themeId;
     sendCustomEvent("theme");
     saveConfig();
+}
+
+string getModelsPath() {
+    return buildNormalizedPath(_exePath, _modelsFolder);
 }
 
 string getCurrentModel() {
@@ -114,7 +125,7 @@ void loadConfig() {
     }
     JSONValue json = parseJSON(readText(_configFilePath));
     _exeFileName = getJsonStr(json, "app", EXE_FILENAME);
-    _exePath = buildNormalizedPath(getJsonStr(json, "path", _isDevMode ? EXE_PATH : ""));
+    _exePath = buildNormalizedPath(getJsonStr(json, "path", _isDevMode ? EXE_PATH : getBasePath()));
     _modelsFolder = getJsonStr(json, "models", EXE_MODELS_FOLDER);
     _inputPath = getJsonStr(json, "input", "");
     _outputPath = getJsonStr(json, "output", "");
@@ -128,17 +139,6 @@ void loadConfig() {
 
     setLocale(localePath);
 }
-/*
-private bool loadPlugin(string pluginPath) {
-    JSONValue json = parseJSON(readText(pluginPath));
-    string scriptPath = buildNormalizedPath(absolutePath(getJsonStr(json,
-            "script", ""), dirName(pluginPath)));
-    if (!exists(scriptPath))
-        return false;
-    _exePath = pluginPath;
-    loadScript(scriptPath);
-    return true;
-}*/
 
 /// Save config file
 void saveConfig() {

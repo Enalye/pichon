@@ -14,7 +14,7 @@ final class BarUI : GuiElement {
         size(Vec2f(getWindowWidth(), 50f));
 
         auto title = new Label("PICHON", getFont(FontType.boldItalic));
-        title.color = getTheme(ThemeKey.textTitle);
+        title.color = getTheme(ThemeKey.text2);
         title.setAlign(GuiAlignX.center, GuiAlignY.center);
         appendChild(title);
 
@@ -72,15 +72,15 @@ final class QuitButton : Button {
     override void draw() {
         if (isClicked) {
             _bg.color = getTheme(ThemeKey.select);
-            _crossSprite.color = getTheme(ThemeKey.textBase);
+            _crossSprite.color = getTheme(ThemeKey.text1);
         }
         else if (isHovered) {
             _bg.color = getTheme(ThemeKey.hover);
-            _crossSprite.color = getTheme(ThemeKey.textBase);
+            _crossSprite.color = getTheme(ThemeKey.text1);
         }
         else {
             _bg.color = getTheme(ThemeKey.background);
-            _crossSprite.color = getTheme(ThemeKey.textTitle);
+            _crossSprite.color = getTheme(ThemeKey.text2);
         }
         _bg.draw(center);
         _crossSprite.draw(center);
@@ -110,15 +110,15 @@ final class MinimizeButton : Button {
     override void draw() {
         if (isClicked) {
             _bg.color = getTheme(ThemeKey.select);
-            _minimizeSprite.color = getTheme(ThemeKey.textBase);
+            _minimizeSprite.color = getTheme(ThemeKey.text1);
         }
         else if (isHovered) {
             _bg.color = getTheme(ThemeKey.hover);
-            _minimizeSprite.color = getTheme(ThemeKey.textBase);
+            _minimizeSprite.color = getTheme(ThemeKey.text1);
         }
         else {
             _bg.color = getTheme(ThemeKey.background);
-            _minimizeSprite.color = getTheme(ThemeKey.textTitle);
+            _minimizeSprite.color = getTheme(ThemeKey.text2);
         }
         _bg.draw(center);
         _minimizeSprite.draw(center);

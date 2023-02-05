@@ -35,7 +35,7 @@ final class EditablePathGui : GuiElement {
         size = Vec2f(400f, 25f);
 
         _label = new Label(path);
-        _label.color = getTheme(ThemeKey.textTitle);
+        _label.color = getTheme(ThemeKey.text2);
         _label.setAlign(GuiAlignX.left, GuiAlignY.center);
         appendChild(_label);
 
@@ -100,7 +100,7 @@ final class EditablePathGui : GuiElement {
             removeChildren();
             _inputField = new InputField(size, _label.text);
             _inputField.font = getFont(FontType.mono);
-            _inputField.color = getTheme(ThemeKey.textTitle);
+            _inputField.color = getTheme(ThemeKey.text2);
             _inputField.caretColor = getTheme(ThemeKey.hint);
             _inputField.selectionColor = getTheme(ThemeKey.select);
             _inputField.setAlign(GuiAlignX.center, GuiAlignY.center);

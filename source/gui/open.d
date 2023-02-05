@@ -9,6 +9,7 @@ import std.file, std.path, std.string;
 import atelier;
 import gui.editable_path, gui.buttons;
 import common;
+import gui.label;
 
 final class OpenModal : GuiElement {
     final class DirListGui : VList {
@@ -65,7 +66,7 @@ final class OpenModal : GuiElement {
             _inputField = new InputField(Vec2f(200f, 25f));
             _inputField.font = getFont(FontType.mono);
             _inputField.setCallback(this, "search");
-            _inputField.color = getTheme(ThemeKey.textBase);
+            _inputField.color = getTheme(ThemeKey.text1);
             _inputField.caretColor = getTheme(ThemeKey.hint);
             _inputField.selectionColor = getTheme(ThemeKey.select);
             appendChild(_inputField);
@@ -87,14 +88,14 @@ final class OpenModal : GuiElement {
         SearchField _searchField;
         DirListGui _list;
         string _path, _fileName;
-        Label _filePathLabel;
+        CustomLabel _filePathLabel;
         GuiElement _applyBtn;
         string[] _extensionList;
         bool _allowDir;
         NinePatch _bg;
     }
 
-    this(string basePath, string[] extensionList, bool allowDir = false) {
+    this(string titleKey, string basePath, string[] extensionList, bool allowDir = false) {
         _extensionList = extensionList;
         _allowDir = allowDir;
 
@@ -120,8 +121,8 @@ final class OpenModal : GuiElement {
         _bg.size = size;
 
         { //Title
-            auto title = new Label(getText("file_to_open") ~ ":");
-            title.color = getTheme(ThemeKey.textTitle);
+            auto title = new CustomLabel(getText(titleKey) ~ ":");
+            title.color = getTheme(ThemeKey.text2);
             title.setAlign(GuiAlignX.left, GuiAlignY.top);
             title.position = Vec2f(20f, 10f);
             appendChild(title);
@@ -145,8 +146,8 @@ final class OpenModal : GuiElement {
         }
 
         {
-            _filePathLabel = new Label(getText(_allowDir ? "path" : "file") ~ ": ---");
-            _filePathLabel.color = getTheme(ThemeKey.textTitle);
+            _filePathLabel = new CustomLabel(getText(_allowDir ? "path" : "file") ~ ": ---");
+            _filePathLabel.color = getTheme(ThemeKey.text2);
             _filePathLabel.setAlign(GuiAlignX.left, GuiAlignY.bottom);
             _filePathLabel.position = Vec2f(20f, 50f);
             appendChild(_filePathLabel);
@@ -194,8 +195,8 @@ final class OpenModal : GuiElement {
             hbox.spacing = Vec2f(10f, 0f);
             appendChild(hbox);
 
-            Label label = new Label(getText("search") ~ ":");
-            label.color = getTheme(ThemeKey.textTitle);
+            CustomLabel label = new CustomLabel(getText("search") ~ ":");
+            label.color = getTheme(ThemeKey.text2);
             hbox.appendChild(label);
 
             _searchField = new SearchField;
@@ -334,10 +335,10 @@ final class OpenModal : GuiElement {
             const auto type = getFileType(file);
             final switch (type) with (FileType) {
             case DirectoryType:
-                _list.add(baseName(file), getTheme(ThemeKey.textBase));
+                _list.add(baseName(file), getTheme(ThemeKey.text1));
                 continue;
             case ValidType:
-                _list.add(baseName(file), getTheme(ThemeKey.textTitle));
+                _list.add(baseName(file), getTheme(ThemeKey.text3));
                 continue;
             case InvalidType:
                 continue;

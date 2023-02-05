@@ -6,7 +6,7 @@ import core.thread;
 import atelier;
 
 import common;
-import gui.buttons, gui.open, gui.theme, gui.locale, gui.bar;
+import gui.buttons, gui.open, gui.theme, gui.locale, gui.bar, gui.label, gui.dropdownlist;
 
 enum ProgressStatus {
     none,
@@ -23,20 +23,21 @@ private shared {
 
 final class Window : GuiElement {
     private {
-        DropDownList _modelSelector, _scaleSelector, _extensionSelector;
+        CustomDropDownList _modelSelector, _scaleSelector, _extensionSelector;
         FileButton _inputFileBtn, _outputFolderBtn;
         InputField _outputFileField;
         RunButton _runBtn;
+        SettingButton _settingBtn;
         ThemeUI _theme;
         LocaleUI _locale;
         BarUI _bar;
         QuitButton _clearOutputBtn;
         ProgressBar _progressBar;
-        Label _logLabel, _outputNameLabel, _outputNameDefaultLabel;
+        CustomLabel _logLabel, _outputNameLabel, _outputNameDefaultLabel;
         InputField _outputNameField;
         ToggleUI _outputNameDefaultToggle;
 
-        Label _modelLabel, _scaleLabel, _fileLabel, _outputLabel, _extensionLabel;
+        CustomLabel _modelLabel, _scaleLabel, _fileLabel, _outputLabel, _extensionLabel;
         ScrollLabel _inputFileLabel, _outputFileLabel;
 
         AppThread _appThread;
@@ -66,7 +67,7 @@ final class Window : GuiElement {
             auto hbox = new HContainer;
             hbox.setAlign(GuiAlignX.right, GuiAlignY.top);
             hbox.position(Vec2f(10f, 60f));
-            hbox.spacing = Vec2f(25f, 0f);
+            hbox.spacing = Vec2f(10f, 0f);
             hbox.setChildAlign(GuiAlignY.center);
             appendChild(hbox);
 
@@ -75,6 +76,10 @@ final class Window : GuiElement {
 
             _locale = new LocaleUI;
             hbox.appendChild(_locale);
+
+            _settingBtn = new SettingButton;
+            _settingBtn.setCallback(this, "exe");
+            hbox.appendChild(_settingBtn);
         }
 
         {
@@ -82,15 +87,15 @@ final class Window : GuiElement {
             box.setAlign(GuiAlignX.left, GuiAlignY.center);
             vbox.appendChild(box);
 
-            _modelLabel = new Label(getText("model") ~ ":");
+            _modelLabel = new CustomLabel(getText("model") ~ ":");
             _modelLabel.setAlign(GuiAlignX.left, GuiAlignY.bottom);
-            _modelLabel.color = getTheme(ThemeKey.textBase);
+            _modelLabel.color = getTheme(ThemeKey.text1);
             box.appendChild(_modelLabel);
 
-            _modelSelector = new DropDownList(Vec2f(300f, 25f), 4);
+            _modelSelector = new CustomDropDownList(Vec2f(300f, 25f), 4);
             _modelSelector.setAlign(GuiAlignX.right, GuiAlignY.bottom);
 
-            auto modelsPath = buildNormalizedPath(EXE_PATH, EXE_MODELS_FOLDER);
+            auto modelsPath = getModelsPath();
             if (exists(modelsPath)) {
                 auto files = dirEntries(modelsPath, "{*.param}", SpanMode.shallow);
                 foreach (file; files) {
@@ -99,6 +104,10 @@ final class Window : GuiElement {
                 }
             }
             _modelSelector.setSelectedName(getCurrentModel());
+
+            if (getCurrentModel() != _modelSelector.getSelectedName())
+                setCurrentModel(_modelSelector.getSelectedName());
+
             _modelSelector.setCallback(this, "model");
             box.appendChild(_modelSelector);
 
@@ -110,12 +119,12 @@ final class Window : GuiElement {
             box.setAlign(GuiAlignX.left, GuiAlignY.center);
             vbox.appendChild(box);
 
-            _scaleLabel = new Label(getText("scale") ~ ":");
+            _scaleLabel = new CustomLabel(getText("scale") ~ ":");
             _scaleLabel.setAlign(GuiAlignX.left, GuiAlignY.bottom);
-            _scaleLabel.color = getTheme(ThemeKey.textBase);
+            _scaleLabel.color = getTheme(ThemeKey.text1);
             box.appendChild(_scaleLabel);
 
-            _scaleSelector = new DropDownList(Vec2f(50f, 25f), 3);
+            _scaleSelector = new CustomDropDownList(Vec2f(50f, 25f), 3);
             _scaleSelector.setAlign(GuiAlignX.right, GuiAlignY.bottom);
             foreach (value; ["x2", "x3", "x4"]) {
                 _scaleSelector.add(value);
@@ -149,9 +158,9 @@ final class Window : GuiElement {
             auto hbox = new GuiElement;
             box.appendChild(hbox);
 
-            _fileLabel = new Label(getText("file") ~ ": ");
+            _fileLabel = new CustomLabel(getText("file") ~ ": ");
             _fileLabel.setAlign(GuiAlignX.left, GuiAlignY.bottom);
-            _fileLabel.color = getTheme(ThemeKey.textBase);
+            _fileLabel.color = getTheme(ThemeKey.text1);
             hbox.appendChild(_fileLabel);
 
             _inputFileLabel = new ScrollLabel(400f, getCurrentFile());
@@ -176,9 +185,9 @@ final class Window : GuiElement {
                 auto hbox = new GuiElement;
                 box.appendChild(hbox);
 
-                _outputLabel = new Label(getText("output") ~ ": ");
+                _outputLabel = new CustomLabel(getText("output") ~ ": ");
                 _outputLabel.setAlign(GuiAlignX.left, GuiAlignY.bottom);
-                _outputLabel.color = getTheme(ThemeKey.textBase);
+                _outputLabel.color = getTheme(ThemeKey.text1);
                 hbox.appendChild(_outputLabel);
 
                 _outputFileLabel = new ScrollLabel(350f, hasOutputPath() ?
@@ -206,24 +215,24 @@ final class Window : GuiElement {
                 auto hbox = new GuiElement;
                 box.appendChild(hbox);
 
-                _outputNameLabel = new Label(getText("output_name") ~ ": ");
+                _outputNameLabel = new CustomLabel(getText("output_name") ~ ": ");
                 _outputNameLabel.setAlign(GuiAlignX.left, GuiAlignY.bottom);
-                _outputNameLabel.color = getTheme(ThemeKey.textBase);
+                _outputNameLabel.color = getTheme(ThemeKey.text1);
                 hbox.appendChild(_outputNameLabel);
 
                 _outputNameField = new InputField(Vec2f(200f, 25f), "");
                 _outputNameField.setAlign(GuiAlignX.left, GuiAlignY.bottom);
                 _outputNameField.position(Vec2f(100f, 0f));
                 _outputNameField.font = getFont(FontType.mono);
-                _outputNameField.color = getTheme(ThemeKey.textBase);
+                _outputNameField.color = getTheme(ThemeKey.text1);
                 _outputNameField.caretColor = getTheme(ThemeKey.hint);
                 _outputNameField.selectionColor = getTheme(ThemeKey.select);
                 hbox.appendChild(_outputNameField);
 
-                _outputNameDefaultLabel = new Label(getText("output_name_default") ~ ": ");
+                _outputNameDefaultLabel = new CustomLabel(getText("output_name_default") ~ ": ");
                 _outputNameDefaultLabel.setAlign(GuiAlignX.right, GuiAlignY.bottom);
                 _outputNameDefaultLabel.position(Vec2f(35f, 0f));
-                _outputNameDefaultLabel.color = getTheme(ThemeKey.textBase);
+                _outputNameDefaultLabel.color = getTheme(ThemeKey.text1);
                 hbox.appendChild(_outputNameDefaultLabel);
 
                 _outputNameDefaultToggle = new ToggleUI(true);
@@ -240,12 +249,12 @@ final class Window : GuiElement {
             auto hbox = new GuiElement;
             vbox.appendChild(hbox);
 
-            _extensionLabel = new Label(getText("extension") ~ ":");
+            _extensionLabel = new CustomLabel(getText("extension") ~ ":");
             _extensionLabel.setAlign(GuiAlignX.left, GuiAlignY.bottom);
-            _extensionLabel.color = getTheme(ThemeKey.textBase);
+            _extensionLabel.color = getTheme(ThemeKey.text1);
             hbox.appendChild(_extensionLabel);
 
-            _extensionSelector = new DropDownList(Vec2f(150f, 25f), 3);
+            _extensionSelector = new CustomDropDownList(Vec2f(150f, 25f), 3);
             _extensionSelector.setAlign(GuiAlignX.right, GuiAlignY.bottom);
             foreach (value; [getText("extension_auto"), "jpg", "png", "webp"]) {
                 _extensionSelector.add(value);
@@ -275,10 +284,10 @@ final class Window : GuiElement {
         }
 
         {
-            _logLabel = new Label("", getFont(FontType.small));
+            _logLabel = new CustomLabel("", getFont(FontType.small));
             _logLabel.position(Vec2f(0f, 5f));
             _logLabel.setAlign(GuiAlignX.center, GuiAlignY.bottom);
-            _logLabel.color = getTheme(ThemeKey.textBase);
+            _logLabel.color = getTheme(ThemeKey.text1);
             appendChild(_logLabel);
         }
 
@@ -289,6 +298,21 @@ final class Window : GuiElement {
         switch (event.type) with (Event.Type) {
         case custom:
             switch (event.custom.id) {
+            case "exe":
+                _modelSelector.removeChildren();
+                auto modelsPath = getModelsPath();
+                if (exists(modelsPath)) {
+                    auto files = dirEntries(modelsPath, "{*.param}", SpanMode.shallow);
+                    foreach (file; files) {
+                        string fileName = baseName(stripExtension(file));
+                        _modelSelector.add(fileName);
+                    }
+                }
+                _modelSelector.setSelectedName(getCurrentModel());
+
+                if (getCurrentModel() != _modelSelector.getSelectedName())
+                    setCurrentModel(_modelSelector.getSelectedName());
+                break;
             case "locale":
                 _modelLabel.text = getText("model") ~ ":";
                 _scaleLabel.text = getText("scale") ~ ":";
@@ -313,17 +337,17 @@ final class Window : GuiElement {
             case "theme":
                 setWindowClearColor(getTheme(ThemeKey.background));
 
-                _modelLabel.color = getTheme(ThemeKey.textBase);
-                _scaleLabel.color = getTheme(ThemeKey.textBase);
-                _fileLabel.color = getTheme(ThemeKey.textBase);
-                _outputLabel.color = getTheme(ThemeKey.textBase);
-                _outputNameLabel.color = getTheme(ThemeKey.textBase);
-                _outputNameDefaultLabel.color = getTheme(ThemeKey.textBase);
-                _extensionLabel.color = getTheme(ThemeKey.textBase);
-                _logLabel.color = getTheme(ThemeKey.textBase);
+                _modelLabel.color = getTheme(ThemeKey.text1);
+                _scaleLabel.color = getTheme(ThemeKey.text1);
+                _fileLabel.color = getTheme(ThemeKey.text1);
+                _outputLabel.color = getTheme(ThemeKey.text1);
+                _outputNameLabel.color = getTheme(ThemeKey.text1);
+                _outputNameDefaultLabel.color = getTheme(ThemeKey.text1);
+                _extensionLabel.color = getTheme(ThemeKey.text1);
+                _logLabel.color = getTheme(ThemeKey.text1);
 
                 _outputNameField.color = getTheme(_outputNameDefaultToggle.isChecked ?
-                        ThemeKey.textTitle : ThemeKey.textBase);
+                        ThemeKey.text2 : ThemeKey.text1);
                 _outputNameField.caretColor = getTheme(ThemeKey.hint);
                 _outputNameField.selectionColor = getTheme(ThemeKey.select);
 
@@ -343,9 +367,8 @@ final class Window : GuiElement {
             stopOverlay();
             isClicked = false;
             isHovered = false;
-            auto modal = new OpenModal(getCurrentFile(), [
-                    ".jpg", ".jpeg", ".png", ".bmp", ".gif", ".mp4"
-                ]);
+            auto modal = new OpenModal("file_to_open", getCurrentFile(),
+                [".jpg", ".jpeg", ".png", ".bmp", ".gif", ".mp4"]);
             modal.setCallback(this, "input.modal");
             pushModal(modal);
             break;
@@ -361,7 +384,7 @@ final class Window : GuiElement {
             stopOverlay();
             isClicked = false;
             isHovered = false;
-            auto modal = new OpenModal(getOutputPath(), [], true);
+            auto modal = new OpenModal("folder_to_open", getOutputPath(), [], true);
             modal.setCallback(this, "output.modal");
             pushModal(modal);
             break;
@@ -379,7 +402,7 @@ final class Window : GuiElement {
                 _outputNameField.isLocked = true;
                 _outputNameField.hasFocus = false;
                 _outputNameField.isInteractable = false;
-                _outputNameField.color = getTheme(ThemeKey.textTitle);
+                _outputNameField.color = getTheme(ThemeKey.text2);
                 _outputNameField.caretColor = getTheme(ThemeKey.hint);
                 _outputNameField.selectionColor = getTheme(ThemeKey.select);
                 _setDefaultOutputName();
@@ -387,7 +410,7 @@ final class Window : GuiElement {
             else {
                 _outputNameField.isLocked = false;
                 _outputNameField.isInteractable = true;
-                _outputNameField.color = getTheme(ThemeKey.textBase);
+                _outputNameField.color = getTheme(ThemeKey.text1);
                 _outputNameField.caretColor = getTheme(ThemeKey.hint);
                 _outputNameField.selectionColor = getTheme(ThemeKey.select);
             }
@@ -411,7 +434,28 @@ final class Window : GuiElement {
             if (_outputNameDefaultToggle.isChecked)
                 _setDefaultOutputName();
             break;
+        case "exe":
+            stopOverlay();
+            isClicked = false;
+            isHovered = false;
+            auto modal = new OpenModal("program_to_be_used", dirName(getExePath()), [
+                    ".exe"
+                ]);
+            modal.setCallback(this, "exe.modal");
+            pushModal(modal);
+            break;
+        case "exe.modal":
+            auto modal = popModal!OpenModal;
+            setExePath(modal.getPath());
+            break;
         case "run":
+            string exePath = getExePath();
+            if (!exists(exePath)) {
+                onCallback("exe");
+                if (!exists(exePath)) {
+                    break;
+                }
+            }
             _generatedFile = buildNormalizedPath(getOutputPath(),
                 setExtension(_outputNameField.text, _extensionSelector.selected() == 0 ?
                     extension(getCurrentFile()) : _extensionSelector.getSelectedName()));
@@ -447,7 +491,9 @@ final class Window : GuiElement {
             }
         }
         else {
-            _runBtn.isLocked = false;
+            _runBtn.isLocked = (!_outputNameDefaultToggle.isChecked &&
+                    !_outputNameField.text.length) || (getCurrentFile()
+                    .length == 0) || (getCurrentModel().length == 0);
         }
 
         if (_progressLog != _log) {
@@ -617,7 +663,7 @@ final class AppThread : Thread {
 final class FileButton : Button {
     private {
         NinePatch _bg;
-        Label _label;
+        CustomLabel _label;
         string _key;
     }
 
@@ -625,9 +671,9 @@ final class FileButton : Button {
         _key = key;
         size = Vec2f(500f, 35f);
 
-        _label = new Label(getText(_key));
+        _label = new CustomLabel(getText(_key));
         _label.setAlign(GuiAlignX.center, GuiAlignY.center);
-        _label.color = getTheme(ThemeKey.textBase);
+        _label.color = getTheme(ThemeKey.text1);
         appendChild(_label);
 
         _bg = fetch!NinePatch("bg");
@@ -642,7 +688,7 @@ final class FileButton : Button {
                 _label.text = getText(_key);
                 break;
             case "theme":
-                _label.color = getTheme(ThemeKey.textBase);
+                _label.color = getTheme(ThemeKey.text1);
                 break;
             default:
                 break;
@@ -674,7 +720,7 @@ final class FileButton : Button {
 final class RunButton : Button {
     private {
         NinePatch _bg;
-        Label _label;
+        CustomLabel _label;
     }
 
     this() {
@@ -682,9 +728,9 @@ final class RunButton : Button {
         _bg = fetch!NinePatch("bg");
         _bg.size = size;
 
-        _label = new Label(getText("run"), getFont(FontType.bold));
+        _label = new CustomLabel(getText("run"), getFont(FontType.bold));
         _label.setAlign(GuiAlignX.center, GuiAlignY.center);
-        _label.color = getTheme(ThemeKey.textBase);
+        _label.color = getTheme(ThemeKey.text1);
         appendChild(_label);
     }
 
@@ -696,7 +742,7 @@ final class RunButton : Button {
                 _label.text = getText("run");
                 break;
             case "theme":
-                _label.color = getTheme(ThemeKey.textBase);
+                _label.color = getTheme(ThemeKey.text1);
                 break;
             default:
                 break;
@@ -732,13 +778,13 @@ final class SpaceUI : GuiElement {
 
 final class ScrollLabel : GuiElement {
     private {
-        Label _label;
+        CustomLabel _label;
         Timer _timer;
     }
 
     this(float width_, string txt) {
-        _label = new Label(txt);
-        _label.color = getTheme(ThemeKey.textTitle);
+        _label = new CustomLabel(txt);
+        _label.color = getTheme(ThemeKey.text2);
         size(Vec2f(width_, _label.size.y));
         appendChild(_label);
         setCanvas(true);
@@ -752,7 +798,7 @@ final class ScrollLabel : GuiElement {
         case custom:
             switch (event.custom.id) {
             case "theme":
-                _label.color = getTheme(ThemeKey.textTitle);
+                _label.color = getTheme(ThemeKey.text2);
                 break;
             default:
                 break;
@@ -798,8 +844,8 @@ final class ToggleUI : GuiElement {
         _uncheckedSprite = fetch!Sprite("toggle");
         _checkedSprite = fetch!Sprite("toggle.check");
 
-        _uncheckedSprite.color = getTheme(ThemeKey.textTitle);
-        _checkedSprite.color = getTheme(ThemeKey.textTitle);
+        _uncheckedSprite.color = getTheme(ThemeKey.text2);
+        _checkedSprite.color = getTheme(ThemeKey.text2);
 
         size(_checkedSprite.size);
     }
@@ -809,8 +855,8 @@ final class ToggleUI : GuiElement {
         case custom:
             switch (event.custom.id) {
             case "theme":
-                _uncheckedSprite.color = getTheme(ThemeKey.textTitle);
-                _checkedSprite.color = getTheme(ThemeKey.textTitle);
+                _uncheckedSprite.color = getTheme(ThemeKey.text2);
+                _checkedSprite.color = getTheme(ThemeKey.text2);
                 break;
             default:
                 break;

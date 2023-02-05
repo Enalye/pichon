@@ -14,6 +14,8 @@
     "run": "Run",
     "done": "File generated at",
     "file_to_open": "File to open",
+    "folder_to_open": "Folder to open",
+    "program_to_be_used": "Program to be used",
     "search": "Search",
     "path": "Path",
     "open": "Open",

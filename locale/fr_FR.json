@@ -14,6 +14,8 @@
     "run": "Lancer",
     "done": "Fichier généré à",
     "file_to_open": "Fichier à ouvrir",
+    "folder_to_open": "Dossier à ouvrir",
+    "program_to_be_used": "Programme à utiliser",
     "search": "Rechercher",
     "path": "Chemin",
     "open": "Ouvrir",

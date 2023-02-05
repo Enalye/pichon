@@ -1,4 +1,3 @@
-import std.stdio : writeln;
 import startup;
 
 void main(string[] args) {
@@ -9,9 +8,16 @@ void main(string[] args) {
         }*/
     }
     catch (Exception e) {
-        writeln(e.msg);
-		foreach (trace; e.info)
-			writeln("at: ", trace);
+        import std.file : write;
+
+        string crashLog;
+
+        crashLog ~= "Error: " ~ e.msg ~ "\n";
+        foreach (trace; e.info) {
+            crashLog ~= "at: " ~ trace ~ "\n";
+        }
+
+        write("crash.txt", crashLog);
     }
 }
 /*

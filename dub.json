@@ -15,5 +15,23 @@
     "targetName": "pichon",
     "targetType": "executable",
     "workingDirectory": "",
-    "targetPath": "bin"
+    "targetPath": "bin",
+    "configurations": [
+        {
+            "name": "windows-build",
+            "platforms": [
+                "windows"
+            ]
+        },
+        {
+            "name": "windows-release",
+            "platforms": [
+                "windows"
+            ],
+            "lflags": [
+                "-subsystem:windows",
+                "-entry:mainCRTStartup"
+            ]
+        }
+    ]
 }

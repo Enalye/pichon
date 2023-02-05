@@ -1,0 +1,1 @@
+dub build --build=release --config=windows-release

@@ -3,10 +3,10 @@
     "currentFile": "H:\\dev\\pichon\\bin\\realesrgan-ncnn-vulkan-20220424-windows\\input.jpg",
     "currentModel": "realesrgan-x4plus-anime",
     "input": "",
-    "locale": "locale\\fr_FR.json",
+    "locale": "locale\\eo.json",
     "models": "models",
     "output": "",
     "path": "H:\\dev\\pichon\\bin\\realesrgan-ncnn-vulkan-20220424-windows",
     "scale": 4,
-    "themeId": 0
+    "themeId": 1
 }

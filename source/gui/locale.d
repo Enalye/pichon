@@ -8,11 +8,11 @@ module gui.locale;
 import std.path, std.file, std.string, std.exception;
 import atelier;
 import common;
-import gui.buttons;
+import gui.buttons, gui.label;
 
 final class LocaleUI : GuiElement {
     private {
-        Label _label;
+        CustomLabel _label;
         string[] _locales;
     }
 
@@ -29,14 +29,14 @@ final class LocaleUI : GuiElement {
             _locales ~= filePath;
         }
 
-        _label = new Label(getText("locale"), getFont(FontType.bold));
-        _label.color = getTheme(ThemeKey.textTitle);
+        _label = new CustomLabel(getText("locale"), getFont(FontType.bold));
+        _label.color = getTheme(ThemeKey.text2);
         _label.setAlign(GuiAlignX.left, GuiAlignY.center);
         appendChild(_label);
     }
 
     override void update(float deltaTime) {
-        _label.color = isSelected || isHovered ? getTheme(ThemeKey.textBase) : getTheme(ThemeKey.textTitle);
+        _label.color = isSelected || isHovered ? getTheme(ThemeKey.text1) : getTheme(ThemeKey.text2);
     }
 
     override void onEvent(Event event) {
