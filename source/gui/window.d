@@ -296,6 +296,13 @@ final class Window : GuiElement {
 
     override void onEvent(Event event) {
         switch (event.type) with (Event.Type) {
+        case dropFile:
+            setCurrentFile(event.drop.filePath);
+            _inputFileLabel.setText(getCurrentFile());
+
+            if (_outputNameDefaultToggle.isChecked)
+                _setDefaultOutputName();
+            break;
         case custom:
             switch (event.custom.id) {
             case "exe":
@@ -350,7 +357,6 @@ final class Window : GuiElement {
                         ThemeKey.text2 : ThemeKey.text1);
                 _outputNameField.caretColor = getTheme(ThemeKey.hint);
                 _outputNameField.selectionColor = getTheme(ThemeKey.select);
-
                 break;
             default:
                 break;
