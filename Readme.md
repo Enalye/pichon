@@ -8,7 +8,7 @@ This application require the program https://github.com/xinntao/Real-ESRGAN (dow
 ![Tutorial](screenshots/tuto.png)
 1. Select the active transformation model
 2. Change the scale (x2 up to x4)
-3. Select the source file to upscale
+3. Select the source file to upscale (or drag&drop the file directly into the application)
 4. Select to where you want the generated file to be (By default, it is the same as the source file)
 5. Fall back to the default output folder
 6. Name of the generated file (locked if `Default name` is toggled on)
