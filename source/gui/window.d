@@ -311,6 +311,7 @@ final class Window : GuiElement {
 
                 if (_outputNameDefaultToggle.isChecked)
                     _setDefaultOutputName();
+                break;
             default:
                 break;
             }
