@@ -256,7 +256,9 @@ final class Window : GuiElement {
 
             _extensionSelector = new CustomDropDownList(Vec2f(150f, 25f), 3);
             _extensionSelector.setAlign(GuiAlignX.right, GuiAlignY.bottom);
-            foreach (value; [getText("extension_auto"), "jpg", "png", "webp"]) {
+            foreach (value; [
+                    getText("extension_auto"), "jpg", "png", "gif", "webp"
+                ]) {
                 _extensionSelector.add(value);
             }
 
@@ -297,11 +299,21 @@ final class Window : GuiElement {
     override void onEvent(Event event) {
         switch (event.type) with (Event.Type) {
         case dropFile:
-            setCurrentFile(event.drop.filePath);
-            _inputFileLabel.setText(getCurrentFile());
+            switch (extension(event.drop.filePath)) {
+            case ".jpg":
+            case ".jpeg":
+            case ".png":
+            case ".bmp":
+            case ".gif":
+            case ".webp":
+                setCurrentFile(event.drop.filePath);
+                _inputFileLabel.setText(getCurrentFile());
 
-            if (_outputNameDefaultToggle.isChecked)
-                _setDefaultOutputName();
+                if (_outputNameDefaultToggle.isChecked)
+                    _setDefaultOutputName();
+            default:
+                break;
+            }
             break;
         case custom:
             switch (event.custom.id) {
@@ -374,7 +386,7 @@ final class Window : GuiElement {
             isClicked = false;
             isHovered = false;
             auto modal = new OpenModal("file_to_open", getCurrentFile(),
-                [".jpg", ".jpeg", ".png", ".bmp", ".gif", ".mp4"]);
+                [".jpg", ".jpeg", ".png", ".bmp", ".gif", ".webp"]);
             modal.setCallback(this, "input.modal");
             pushModal(modal);
             break;
@@ -462,9 +474,28 @@ final class Window : GuiElement {
                     break;
                 }
             }
+
+            string ext;
+            if (_extensionSelector.selected() == 0) {
+                ext = extension(getCurrentFile());
+                switch (ext) {
+                case ".gif":
+                case ".bmp":
+                    ext = ".png";
+                    break;
+                case ".jpeg":
+                    ext = ".jpg";
+                    break;
+                default:
+                    break;
+                }
+            }
+            else {
+                ext = _extensionSelector.getSelectedName();
+            }
+
             _generatedFile = buildNormalizedPath(getOutputPath(),
-                setExtension(_outputNameField.text, _extensionSelector.selected() == 0 ?
-                    extension(getCurrentFile()) : _extensionSelector.getSelectedName()));
+                setExtension(_outputNameField.text, ext));
             _appThread = new AppThread([
                 getExePath(), "-i", getCurrentFile(), "-o", _generatedFile,
                 "-n", getCurrentModel(), "-s", to!string(getScale())

@@ -18,7 +18,6 @@ enum EXE_MODELS_FOLDER = "models";
 private {
     bool _isConfigFilePathConfigured;
     string _configFilePath = "config.json";
-    bool _isDevMode = false;
     string _exeFileName, _exePath, _modelsFolder, _inputPath, _outputPath,
         _currentFile, _currentModel;
     int _themeId = 0, _scale = 4;
@@ -36,11 +35,11 @@ void setExePath(string exePath) {
 }
 
 string getBasePath() {
-    if (_isDevMode) {
-        return getcwd();
+    version (ReleaseApp) {
+        return dirName(thisExePath());
     }
     else {
-        return dirName(thisExePath());
+        return getcwd();
     }
 }
 
@@ -125,7 +124,14 @@ void loadConfig() {
     }
     JSONValue json = parseJSON(readText(_configFilePath));
     _exeFileName = getJsonStr(json, "app", EXE_FILENAME);
-    _exePath = buildNormalizedPath(getJsonStr(json, "path", _isDevMode ? EXE_PATH : getBasePath()));
+
+    version (ReleaseApp) {
+        _exePath = buildNormalizedPath(getJsonStr(json, "path", getBasePath()));
+    }
+    else {
+        _exePath = buildNormalizedPath(getJsonStr(json, "path", EXE_PATH));
+    }
+
     _modelsFolder = getJsonStr(json, "models", EXE_MODELS_FOLDER);
     _inputPath = getJsonStr(json, "input", "");
     _outputPath = getJsonStr(json, "output", "");

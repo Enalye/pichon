@@ -3,6 +3,7 @@ docs.json
 __dummy.html
 docs/
 bin/
+export/
 /pichon
 pichon.so
 pichon.dylib
